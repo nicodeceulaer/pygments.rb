@@ -33,7 +33,7 @@ class GasLexer(RegexLexer):
     string = r'"(\\"|[^"])*"'
     char = r'[a-zA-Z$._0-9@-]'
     identifier = r'(?:[a-zA-Z$_]' + char + '*|\.' + char + '+)'
-    number = r'(?:0[xX][a-zA-Z0-9]+|\d+)'
+    number = r'(?:0[xX][a-zA-Z0-9]+|#?\d+)'
 
     tokens = {
         'root': [
