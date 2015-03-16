@@ -110,18 +110,26 @@ def _objdump_lexer_tokens(asm_lexer):
             ('(Disassembly of section )(.*?)(:)$',
                 bygroups(Text, Name.Label, Punctuation)),
             # Function labels
-            # (With offset)
-            ('('+hex_re+'+)( )(<)(.*?)([-+])(0[xX][A-Za-z0-9]+)(>:)$',
-                bygroups(Number.Hex, Text, Punctuation, Name.Function,
-                         Punctuation, Number.Hex, Punctuation)),
             # (Without offset)
             ('('+hex_re+'+)( )(<)(.*?)(>:)$',
                 bygroups(Number.Hex, Text, Punctuation, Name.Function,
                          Punctuation)),
+            # (With offset)
+            ('('+hex_re+'+)( )(<)(.*?)([-+])(0[xX][A-Za-z0-9]+)(>:)$',
+                bygroups(Number.Hex, Text, Punctuation, Name.Function,
+                         Punctuation, Number.Hex, Punctuation)),
             # Code line with disassembled instructions
             ('( *)('+hex_re+r'+:)(\t)((?:'+hex_re+hex_re+' )+)( *\t)([a-zA-Z].*?)$',
                 bygroups(Text, Name.Label, Text, Number.Hex, Text,
                          using(asm_lexer))),
+            # mips fix: Code line with disassembled instructions
+            ('(' + hex_re + '+)( )(<)(.*?)([-+])(0[xX][A-Za-z0-9]+)(>)( *)(.*)$',
+                bygroups(Number.Hex, Text, Punctuation, Name.Function,
+                         Punctuation, Number.Hex, Punctuation, Text, using(asm_lexer))),
+            # mips fix: Code line with disassembled instructions (no offset on label)
+            ('(' + hex_re + '+)( )(<)(.*?)(>)( *)(.*)$',
+                bygroups(Number.Hex, Text, Punctuation, Name.Function,
+                         Punctuation, Text, using(asm_lexer))),
             # Code line with ascii
             ('( *)('+hex_re+r'+:)(\t)((?:'+hex_re+hex_re+' )+)( *)(.*?)$',
                 bygroups(Text, Name.Label, Text, Number.Hex, Text, String)),
