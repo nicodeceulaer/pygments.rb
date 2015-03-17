@@ -127,6 +127,11 @@ def _objdump_lexer_tokens(asm_lexer):
                 bygroups(Number.Hex, Text, Punctuation, Name.Function,
                          Punctuation, Number.Hex, Punctuation, Text, using(asm_lexer), 
                          Text, Punctuation, Name.Function, Punctuation, Number.Hex, Punctuation)),
+            # mips fix: Code line with disassembled instructions (no offset on label, reference at end of jump as well)
+            ('(' + hex_re + '+)( )(<)(.*?)(>)( *)(.*)( )(<)(.*?)(>)( *)(.*)$',
+                bygroups(Number.Hex, Text, Punctuation, Name.Function,
+                         Punctuation, Text, using(asm_lexer),
+                         Text, Punctuation, Name.Function, Punctuation )),
             # mips fix: Code line with disassembled instructions
             ('(' + hex_re + '+)( )(<)(.*?)([-+])(0[xX][A-Za-z0-9]+)(>)( *)(.*)$',
                 bygroups(Number.Hex, Text, Punctuation, Name.Function,
